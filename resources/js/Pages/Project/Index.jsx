@@ -5,23 +5,35 @@ import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/constants.jsx
 import TextInput from "@/Components/TextInput.jsx";
 import SelectInput from "@/Components/SelectInput.jsx";
 
-export default function Index({auth, projects, queryParams=null }){
-    const searchFieldChanged = (name,value) => {
-        queryParams = queryParams || {}
-        const searchFieldChanged = (name,value) => {
-            if(value){
-                queryParams[name] = value
-            }else{
-                delete queryParams[name]
+export default function Index({auth, projects, queryParams = null }){
+    queryParams = queryParams || {};
+        const searchFieldChanged = (name, value) => {
+            const params = queryParams || {};
+            if (value) {
+                params[name] = value;
+            } else {
+                delete params[name];
             }
-          router.get(route('project.index'), queryParams);
+            router.get(route('project.index'), params);
         };
         const  onKeyPress = (name,e) => {
             if(e.key !== 'Enter') return;
 
             searchFieldChanged(name,e.target.value)
         }
-    }
+        const sortChanged = (name) => {
+           if (name === queryParams.sort_field) {
+               if(queryParams.sort_direction === 'asc'){
+                   queryParams.sort_direction = 'desc'
+               }else{
+                   queryParams.sort_direction = 'asc'
+               }
+           }else{
+               queryParams.sort_field = name;
+               queryParams.sort_direction = 'asc';
+           }
+           router.get(route("project.index"), queryParams);
+        }
 
     return (
         <AuthenticatedLayout
@@ -41,12 +53,12 @@ export default function Index({auth, projects, queryParams=null }){
                                 <thead
                                     className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                 <tr className="text-nowrap">
-                                    <th className="px-3 py-3">ID</th>
+                                    <th onClick={(e) => sortChanged('id')} className="px-3 py-3">ID</th>
                                     <th className="px-3 py-3">image</th>
-                                    <th className="px-3 py-3">Name</th>
-                                    <th className="px-3 py-3">Status</th>
+                                    <th onClick={(e) => sortChanged('name')} className="px-3 py-3">Name</th>
+                                    <th onClick={(e) => sortChanged('status')} className="px-3 py-3">Status</th>
                                     <th className="px-3 py-3">Create Date</th>
-                                    <th className="px-3 py-3 text-nowrap">Due Date</th>
+                                    <th onClick={(e) => sortChanged('due_date')} className="px-3 py-3 text-nowrap">Due Date</th>
                                     <th className="px-3 py-3 text-nowrap">Created By</th>
                                     <th className="px-3 py-3 text-right">Actions</th>
                                 </tr>
@@ -57,17 +69,19 @@ export default function Index({auth, projects, queryParams=null }){
                                     <th className="px-3 py-3"></th>
                                     <th className="px-3 py-3"></th>
                                     <th className="px-3 py-3">
-                                        <TextInput className="w-full"
-                                                   // defaultValue={queryParams.name}
+                                        <TextInput
+
+                                            className="w-full"
+                                            defaultValue={queryParams.name}
                                                     placeholder="Project Name"
-                                                   onBlur={e => searchFieldChanged('name', e.target.value)}
-                                                   onKeyPress={e => onkeypress('name',e)}
+                                                   onBlur={(e) => searchFieldChanged('name', e.target.value)}
+                                            onKeyPress ={(e) => onKeyPress('name',e)}
                                         />
                                     </th>
                                     <th className="px-3 py-3">
-                                        <SelectInput className="w-full"
-                                                     // defaultValue={queryParams.status}
-                                                     onChange={e => searchFieldChanged("status", e.target.value)}
+                                        <SelectInput className="w-40"
+                                                     defaultValue={queryParams.status}
+                                                     onChange={e => searchFieldChanged('status', e.target.value)}
                                         >
                                             <option value="">Select Status</option>
                                             <option value="pending">Pending</option>
