@@ -127,7 +127,7 @@ export default function TasksTable({
                         </th>
                         <th className="px-3 py-3">
                             <SelectInput
-                                className="w-40"
+                                className="w-full"
                                 defaultValue={queryParams.status}
                                 onChange={(e) => searchFieldChanged("status", e.target.value)}
                             >
