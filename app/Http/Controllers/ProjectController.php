@@ -116,9 +116,6 @@ class ProjectController extends Controller
         return to_route('project.index')->with('success', "Project \"$project->name\" updated successfully.");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Project $project)
     {
         $name = $project->name;

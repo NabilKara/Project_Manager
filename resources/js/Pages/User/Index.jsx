@@ -33,12 +33,12 @@ export default function Index({ auth, users, queryParams = null, success }) {
     }
     router.get(route("user.index"), queryParams);
   };
-  const deleteUser = (user) => {
-    if (!window.confirm("Are you sure you want to delete the user")) {
-      return;
-    }
-    router.delete("user.destroy", user.id);
-  };
+    const deleteUser = (user) => {
+        if (!window.confirm("Are you sure you want to delete the user?")) {
+            return;
+        }
+        router.delete(route("user.destroy", user.id));
+    };
 
   return (
     <AuthenticatedLayout
@@ -152,27 +152,26 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         <td className="px-3 py-2 text-nowrap">
                           {user.created_at}
                         </td>
-                        <td className="px-3 py-2 text-nowrap">
-                          <Link
-                            href={route("user.edit", user.id)}
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                          >
-                            Edit
-                          </Link>
-                          <button
-                            onClick={(e) => deleteUser}
-                            href={route("user.destroy", user.id)}
-                            className="font-medium text-blue-600 dark:text-red-500 hover:underline mx-1"
-                          >
-                            Delete
-                          </button>
-                        </td>
+                          <td className="px-3 py-2 text-nowrap">
+                              <Link
+                                  href={route("user.edit", user.id)}
+                                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
+                              >
+                                  Edit
+                              </Link>
+                              <button
+                                  onClick={(e) => deleteUser(user)}
+                                  className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
+                              >
+                                  Delete
+                              </button>
+                          </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <Pagination links={users.meta.links} />
+                <Pagination links={users.meta.links}/>
             </div>
           </div>
         </div>

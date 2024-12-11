@@ -73,7 +73,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return inertia('User/Edit', [
-            'user' => new UserCrudResource($user),
+        'user' => new UserCrudResource($user),
         ]);
     }
 

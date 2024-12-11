@@ -77,7 +77,6 @@ export default function Create({ auth }){
                                             name="description"
                                             value={data.description}
                                             className="mt-1 block w-full"
-                                            isFocused={true}
                                             onChange={e => setData('description', e.target.value)}
                                         />
                                         <InputError message={errors.description} className="mt-2"/>
@@ -93,7 +92,6 @@ export default function Create({ auth }){
                                             name="date"
                                             value={data.due_date}
                                             className="mt-1 block w-full"
-                                            isFocused={true}
                                             onChange={e => setData('due_date', e.target.value)}
                                         />
                                         <InputError message={errors.due_date} className="mt-2"/>
@@ -108,7 +106,6 @@ export default function Create({ auth }){
                                             name="status"
                                             value={data.status}
                                             className="mt-1 block w-full"
-                                            isFocused={true}
                                             onChange={e => setData('status', e.target.value)}
                                         >
                                             <option value="">Select Status</option>
