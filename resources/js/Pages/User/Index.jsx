@@ -4,6 +4,7 @@ import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
 import TableHeading from "@/Components/TableHeading.jsx";
+import ActionButtons from "@/Components/ActionButtons";
 export default function Index({ auth, users, queryParams = null, success }) {
   queryParams = queryParams || {};
   const searchFieldChanged = (name, value) => {
@@ -104,6 +105,8 @@ export default function Index({ auth, users, queryParams = null, success }) {
                       >
                         Create Date
                       </TableHeading>
+                      <th className="px-3 py-3 text-center">Action</th>
+
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -152,20 +155,12 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         <td className="px-3 py-2 text-nowrap">
                           {user.created_at}
                         </td>
-                          <td className="px-3 py-2 text-nowrap">
-                              <Link
-                                  href={route("user.edit", user.id)}
-                                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
-                              >
-                                  Edit
-                              </Link>
-                              <button
-                                  onClick={(e) => deleteUser(user)}
-                                  className="font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
-                              >
-                                  Delete
-                              </button>
-                          </td>
+                        <td className="px-3 py-2">
+                          <ActionButtons
+                            editRoute={route('user.edit', user.id)}
+                            onDelete={() => deleteUser(user)}
+                          />
+                        </td>
                       </tr>
                     ))}
                   </tbody>

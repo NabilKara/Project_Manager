@@ -37,7 +37,7 @@ class ProjectController extends Controller
         return inertia("Project/Index", [
             "projects" => ProjectResource::collection($projects),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+            // 'success' => session('success'),
         ]);
     }
 
@@ -92,7 +92,7 @@ class ProjectController extends Controller
             'project' => new ProjectResource($project),
             "tasks" => TaskResource::collection($tasks),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+            // 'success' => session('success'),
         ]);
     }
 

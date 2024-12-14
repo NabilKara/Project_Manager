@@ -4,6 +4,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link } from "@inertiajs/react";
+import FlashMessage from "@/Components/FlashMessage";
 
 export default function AuthenticatedLayout({ user, header, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
@@ -17,7 +18,7 @@ export default function AuthenticatedLayout({ user, header, children }) {
                         <div className="flex">
                             <div className="shrink-0 flex items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                                <img className='w-10' src="https://img.freepik.com/vecteurs-libre/degrade-illustration-oiseau-colore_343694-1741.jpg?t=st=1734189314~exp=1734192914~hmac=33da567b69fc769fb18ea52bc5e97439d2e056369a60bcb260f141694213ab62&w=1380" alt="" />
                                 </Link>
                             </div>
 
@@ -184,6 +185,10 @@ export default function AuthenticatedLayout({ user, header, children }) {
                     </div>
                 </header>
             )}
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+                <FlashMessage />
+            </div>
 
             <main>{children}</main>
         </div>
