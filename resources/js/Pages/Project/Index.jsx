@@ -31,7 +31,7 @@ const TableSearchHeader = ({ queryParams, searchFieldChanged, onKeyPress }) => (
       />
     </th>
     <th className="px-3 py-3">
-      <SelectInput 
+      <SelectInput
         className="w-40"
         defaultValue={queryParams.status}
         onChange={e => searchFieldChanged('status', e.target.value)}
@@ -96,7 +96,7 @@ const ProjectsTable = ({ projects, queryParams, onSort, searchFieldChanged, onKe
         </tr>
       </thead>
       <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
-        <TableSearchHeader 
+        <TableSearchHeader
           queryParams={queryParams}
           searchFieldChanged={searchFieldChanged}
           onKeyPress={onKeyPress}
@@ -104,7 +104,7 @@ const ProjectsTable = ({ projects, queryParams, onSort, searchFieldChanged, onKe
       </thead>
       <tbody>
         {projects.data.map((project) => (
-          <tr 
+          <tr
             className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
             key={project.id}
           >
