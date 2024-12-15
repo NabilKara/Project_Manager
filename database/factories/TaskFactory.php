@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Task>
@@ -17,7 +18,7 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->sentence(),
+            'name' => Str::headline(fake()->bs()),
             'description' => fake()->realText(),
             'due_date' => fake()->dateTimeBetween('now', '+1 years'),
             'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),

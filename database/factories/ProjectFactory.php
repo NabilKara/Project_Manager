@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 use Illuminate\Support\Testing\Fakes\Fake;
 
 /**
@@ -18,7 +19,8 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->sentence(),
+//            'name' => fake()->realText(10),
+            "name" => Str::headline(fake()->bs()),
             'description' => fake()->realText(),
             'due_date' => fake()->dateTimeBetween('now', '+1 years'),
             'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
