@@ -1,11 +1,12 @@
-import React from 'react';
 import { Link, router } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination";
 import SelectInput from "@/Components/SelectInput";
+import React, { useState } from 'react';
 import TextInput from "@/Components/TextInput";
 import TableHeading from "@/Components/TableHeading";
 import { TASK_STATUS_CLASS_MAP, TASK_STATUS_TEXT_MAP } from "@/constants.jsx";
 import ActionButtons from '@/Components/ActionButtons';
+import ConfirmModal from "@/Components/ConfirmModal.jsx";
 
 // Status Badge Component
 const StatusBadge = ({ status }) => (
@@ -82,7 +83,19 @@ export default function TasksTable({
   hideProjectColumn = false,
 }) {
   queryParams = queryParams || {};
-
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
+    const deleteTask = (task) => {
+        setTaskToDelete(task);
+        setIsConfirmOpen(true);
+    };
+    const handleConfirmDelete = () => {
+        if (taskToDelete) {
+            router.delete(route("task.destroy", taskToDelete.id));
+            setIsConfirmOpen(false);
+            setTaskToDelete(null);
+        }
+    };
   const searchFieldChanged = (name, value) => {
     if (value) {
       queryParams[name] = value;
@@ -108,19 +121,8 @@ export default function TasksTable({
     router.get(route("task.index"), queryParams);
   };
 
-  const deleteTask = (task) => {
-    if (window.confirm("Are you sure you want to delete the task?")) {
-      router.delete(route("task.destroy", task.id));
-    }
-  };
-
   return (
     <>
-      {success && (
-        <div className="bg-emerald-500 py-2 px-4 text-white rounded mb-4">
-          {success}
-        </div>
-      )}
       <div className="overflow-auto">
         <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -201,6 +203,12 @@ export default function TasksTable({
         </table>
       </div>
       <Pagination links={tasks.meta.links} />
+        <ConfirmModal
+            isOpen={isConfirmOpen}
+            onClose={() => setIsConfirmOpen(false)}
+            onConfirm={handleConfirmDelete}
+            message="Are you sure you want to delete this task?"
+        />
     </>
   );
 }

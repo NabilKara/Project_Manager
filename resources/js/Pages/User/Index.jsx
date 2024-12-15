@@ -1,12 +1,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Head, Link, router } from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
+import React, { useState } from 'react';
 import TextInput from "@/Components/TextInput.jsx";
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
 import TableHeading from "@/Components/TableHeading.jsx";
 import ActionButtons from "@/Components/ActionButtons";
+import ConfirmModal from "@/Components/ConfirmModal.jsx";
 export default function Index({ auth, users, queryParams = null, success }) {
   queryParams = queryParams || {};
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [userToDelete, setUserToDelete] = useState(null);
   const searchFieldChanged = (name, value) => {
     const params = queryParams || {};
     if (value) {
@@ -35,10 +38,15 @@ export default function Index({ auth, users, queryParams = null, success }) {
     router.get(route("user.index"), queryParams);
   };
     const deleteUser = (user) => {
-        if (!window.confirm("Are you sure you want to delete the user?")) {
-            return;
+        setUserToDelete(user);
+        setIsConfirmOpen(true);
+    };
+    const handleConfirmDelete = () => {
+        if (userToDelete) {
+            router.delete(route("user.destroy", userToDelete.id));
+            setIsConfirmOpen(false);
+            setUserToDelete(null);
         }
-        router.delete(route("user.destroy", user.id));
     };
 
   return (
@@ -62,11 +70,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
 
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          {success && (
-            <div className=" mb-4 bg-emerald-500 py-2 px-4 text-white rounded">
-              {success}
-            </div>
-          )}
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <div className="overflow-auto">
@@ -171,6 +174,12 @@ export default function Index({ auth, users, queryParams = null, success }) {
           </div>
         </div>
       </div>
+        <ConfirmModal
+            isOpen={isConfirmOpen}
+            onClose={() => setIsConfirmOpen(false)}
+            onConfirm={handleConfirmDelete}
+            message="Are you sure you want to delete this user?"
+        />
     </AuthenticatedLayout>
   );
 }

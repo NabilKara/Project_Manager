@@ -1,10 +1,24 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-
-import { Head, Link } from "@inertiajs/react";
+import React, { useState } from 'react';
+import {Head, Link, router} from "@inertiajs/react";
 
 import TasksTable from "./TasksTable";
+import ConfirmModal from "@/Components/ConfirmModal.jsx";
 
 export default function Index({ auth, success, tasks, queryParams = null }) {
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
+    const deleteTask = (task) => {
+        setTaskToDelete(task);
+        setIsConfirmOpen(true);
+    };
+    const handleConfirmDelete = () => {
+        if (taskToDelete) {
+            router.delete(route("task.destroy", taskToDelete.id));
+            setIsConfirmOpen(false);
+            setTaskToDelete(null);
+        }
+    };
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -37,6 +51,12 @@ export default function Index({ auth, success, tasks, queryParams = null }) {
                     </div>
                 </div>
             </div>
+            <ConfirmModal
+                isOpen={isConfirmOpen}
+                onClose={() => setIsConfirmOpen(false)}
+                onConfirm={handleConfirmDelete}
+                message="Are you sure you want to delete this task?"
+            />
         </AuthenticatedLayout>
     );
 }
