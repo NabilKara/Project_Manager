@@ -1,12 +1,17 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Head, Link, router } from "@inertiajs/react";
+import { useState } from "react";
 import Pagination from "@/Components/Pagination.jsx";
 import TextInput from "@/Components/TextInput.jsx";
-import { ChevronUpIcon, ChevronDownIcon } from "@heroicons/react/16/solid";
 import TableHeading from "@/Components/TableHeading.jsx";
 import ActionButtons from "@/Components/ActionButtons";
+import ConfirmModal from "@/Components/ConfirmModal";
+
 export default function Index({ auth, users, queryParams = null, success }) {
   queryParams = queryParams || {};
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+
   const searchFieldChanged = (name, value) => {
     const params = queryParams || {};
     if (value) {
@@ -16,11 +21,12 @@ export default function Index({ auth, users, queryParams = null, success }) {
     }
     router.get(route("user.index"), params);
   };
+
   const onKeyPress = (name, e) => {
     if (e.key !== "Enter") return;
-
     searchFieldChanged(name, e.target.value);
   };
+
   const sortChanged = (name) => {
     if (name === queryParams.sort_field) {
       if (queryParams.sort_direction === "asc") {
@@ -34,12 +40,19 @@ export default function Index({ auth, users, queryParams = null, success }) {
     }
     router.get(route("user.index"), queryParams);
   };
-    const deleteUser = (user) => {
-        if (!window.confirm("Are you sure you want to delete the user?")) {
-            return;
-        }
-        router.delete(route("user.destroy", user.id));
-    };
+
+  const deleteUser = (user) => {
+    setUserToDelete(user);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (userToDelete) {
+      router.delete(route("user.destroy", userToDelete.id));
+      setIsConfirmOpen(false);
+      setUserToDelete(null);
+    }
+  };
 
   return (
     <AuthenticatedLayout
@@ -59,11 +72,10 @@ export default function Index({ auth, users, queryParams = null, success }) {
       }
     >
       <Head title="Users" />
-
       <div className="py-12">
         <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
           {success && (
-            <div className=" mb-4 bg-emerald-500 py-2 px-4 text-white rounded">
+            <div className="mb-4 bg-emerald-500 py-2 px-4 text-white rounded">
               {success}
             </div>
           )}
@@ -106,7 +118,6 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         Create Date
                       </TableHeading>
                       <th className="px-3 py-3 text-center">Action</th>
-
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
@@ -117,9 +128,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                           className="w-full"
                           defaultValue={queryParams.name}
                           placeholder="User Name"
-                          onBlur={(e) =>
-                            searchFieldChanged("name", e.target.value)
-                          }
+                          onBlur={(e) => searchFieldChanged("name", e.target.value)}
                           onKeyPress={(e) => onKeyPress("name", e)}
                         />
                       </th>
@@ -128,9 +137,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
                           className="w-full"
                           defaultValue={queryParams.email}
                           placeholder="User Email"
-                          onBlur={(e) =>
-                            searchFieldChanged("email", e.target.value)
-                          }
+                          onBlur={(e) => searchFieldChanged("email", e.target.value)}
                           onKeyPress={(e) => onKeyPress("email", e)}
                         />
                       </th>
@@ -145,16 +152,11 @@ export default function Index({ auth, users, queryParams = null, success }) {
                         key={user.id}
                       >
                         <td className="px-3 py-2">{user.id}</td>
-
-                        <th className="px-3 py-2  text-gray-100 text-nowrap">
+                        <th className="px-3 py-2 text-gray-100 text-nowrap">
                           {user.name}
                         </th>
-                        <td className="px-3 py-2">
-                          {user.email}
-                        </td>
-                        <td className="px-3 py-2 text-nowrap">
-                          {user.created_at}
-                        </td>
+                        <td className="px-3 py-2">{user.email}</td>
+                        <td className="px-3 py-2 text-nowrap">{user.created_at}</td>
                         <td className="px-3 py-2">
                           <ActionButtons
                             editRoute={route('user.edit', user.id)}
@@ -166,11 +168,18 @@ export default function Index({ auth, users, queryParams = null, success }) {
                   </tbody>
                 </table>
               </div>
-                <Pagination links={users.meta.links}/>
+              <Pagination links={users.meta.links} />
             </div>
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        message="Are you sure you want to delete this user?"
+      />
     </AuthenticatedLayout>
   );
 }

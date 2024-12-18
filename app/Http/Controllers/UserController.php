@@ -33,7 +33,7 @@ class UserController extends Controller
         return inertia("User/Index", [
             "users" => UserCrudResource::collection($users),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+            // 'success' => session('success'),
         ]);
     }
 

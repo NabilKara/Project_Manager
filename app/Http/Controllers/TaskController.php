@@ -40,7 +40,7 @@ class TaskController extends Controller
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+            // 'success' => session('success'),
         ]);
     }
 
@@ -158,7 +158,7 @@ class TaskController extends Controller
         return inertia("Task/Index", [
             "tasks" => TaskResource::collection($tasks),
             'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
+            // 'success' => session('success'),
         ]);
     }
 }
