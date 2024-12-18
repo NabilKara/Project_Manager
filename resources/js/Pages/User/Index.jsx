@@ -1,6 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Head, Link, router } from "@inertiajs/react";
-import { useState } from "react";
 import Pagination from "@/Components/Pagination.jsx";
 import React, { useState } from 'react';
 import TextInput from "@/Components/TextInput.jsx";

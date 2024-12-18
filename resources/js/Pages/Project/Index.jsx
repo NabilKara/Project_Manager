@@ -8,6 +8,7 @@ import SelectInput from "@/Components/SelectInput.jsx";
 import TableHeading from "@/Components/TableHeading.jsx";
 import ActionButtons from '@/Components/ActionButtons';
 import ConfirmModal from '@/Components/ConfirmModal';
+import ConfirmModalDelete from '@/Components/ConfirmModalDelete';
 
 // Status Badge Component
 const StatusBadge = ({ status }) => (
@@ -137,10 +138,11 @@ const ProjectsTable = ({ projects, queryParams, onSort, searchFieldChanged, onKe
 );
 
 // Main Page Component
-export default function Index({ auth, projects, queryParams = null, success }) {
+export default function Index({ auth, projects, queryParams = null, success, error }) {
   queryParams = queryParams || {};
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const searchFieldChanged = (name, value) => {
     const params = queryParams || {};
@@ -173,11 +175,25 @@ export default function Index({ auth, projects, queryParams = null, success }) {
     setIsConfirmOpen(true);
   };
 
-  const handleConfirmDelete = () => {
-    if (projectToDelete) {
-      router.delete(route("project.destroy", projectToDelete.id));
-      setIsConfirmOpen(false);
-      setProjectToDelete(null);
+  const handleConfirmDelete = async () => {
+    if (projectToDelete && !isDeleting) {
+      setIsDeleting(true);
+      try {
+        await router.delete(route("project.destroy", projectToDelete.id), {
+          onSuccess: () => {
+            setIsConfirmOpen(false);
+            setProjectToDelete(null);
+          },
+          onError: (errors) => {
+            console.error('Delete failed:', errors);
+          },
+          preserveScroll: true,
+        });
+      } catch (error) {
+        console.error('Delete failed:', error);
+      } finally {
+        setIsDeleting(false);
+      }
     }
   };
 
@@ -206,6 +222,11 @@ export default function Index({ auth, projects, queryParams = null, success }) {
               {success}
             </div>
           )}
+          {error && (
+            <div className="mb-4 bg-red-500 py-2 px-4 text-white rounded">
+              {error}
+            </div>
+          )}
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="p-6 text-gray-900 dark:text-gray-100">
               <ProjectsTable
@@ -222,12 +243,26 @@ export default function Index({ auth, projects, queryParams = null, success }) {
         </div>
       </div>
 
-      <ConfirmModal
+      <ConfirmModalDelete
         isOpen={isConfirmOpen}
-        onClose={() => setIsConfirmOpen(false)}
+        onClose={() => {
+            if (!isDeleting) {
+            setIsConfirmOpen(false);
+            setProjectToDelete(null);
+            }
+        }}
         onConfirm={handleConfirmDelete}
-        message="Are you sure you want to delete this project?"
-      />
+        title="Delete Project"
+        message={
+            <>
+            Are you sure you want to delete this project?
+            <span className="block text-sm text-gray-500 mt-2">
+                This will also delete all related data including tasks, comments, and attachments.
+            </span>
+            </>
+        }
+        isLoading={isDeleting}
+        />
     </AuthenticatedLayout>
   );
 }

@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -130,13 +131,30 @@ class ProjectController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Project $project)
-    {
-        $name = $project->name;
-        $project->delete();
-        if ($project->image_path) {
-            Storage::disk('public')->deleteDirectory(dirname($project->image_path));
+        {
+            try {
+                DB::transaction(function () use ($project) {
+                    // Delete the project image if it exists
+                    if ($project->image_path) {
+                        Storage::disk('public')->deleteDirectory(dirname($project->image_path));
+                    }
+
+                    // Only delete tasks as it's the only hasMany relationship defined
+                    $project->tasks()->delete();
+                    
+                    // Finally delete the project
+                    $project->delete();
+                });
+                
+                return redirect()
+                    ->route('project.index')
+                    ->with('success', 'Project deleted successfully');
+            } catch (\Exception $e) {
+                \Log::error('Project deletion failed: ' . $e->getMessage());
+                
+                return redirect()
+                    ->route('project.index')
+                    ->with('error', 'Failed to delete project. Please try again.');
+            }
         }
-        return to_route('project.index')
-            ->with('success', "Project \"$name\" was deleted");
-    }
 }
