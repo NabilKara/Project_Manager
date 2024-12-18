@@ -117,7 +117,7 @@ class TaskController extends Controller
             $data['image_path'] = $image->store('task/' . Str::random(), 'public');
         }
         $task->update($data);
-
+    
         return to_route('task.index')
             ->with('success', "Task \"$task->name\" was updated");
     }
