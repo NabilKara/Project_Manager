@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
 import Pagination from "@/Components/Pagination.jsx";
+import React, { useState } from 'react';
 import TextInput from "@/Components/TextInput.jsx";
 import TableHeading from "@/Components/TableHeading.jsx";
 import ActionButtons from "@/Components/ActionButtons";
@@ -53,6 +54,7 @@ export default function Index({ auth, users, queryParams = null, success }) {
       setUserToDelete(null);
     }
   };
+
 
   return (
     <AuthenticatedLayout

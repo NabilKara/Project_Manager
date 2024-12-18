@@ -28,6 +28,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('aminedana2004'),
             'email_verified_at' => now(),
         ]);
+        User::factory()->create([
+        'name' => 'Ahmed',
+        'email' => 'ahmedkarim@gmail.com',
+        'password' => bcrypt('ahmedkarim2004'),
+        'email_verified_at' => now(),
+    ]);
         Project::factory()
             ->count(30)
             ->hasTasks(30)

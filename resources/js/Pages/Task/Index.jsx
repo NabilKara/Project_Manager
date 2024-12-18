@@ -67,3 +67,4 @@ export default function Index({ auth, success, tasks, queryParams = null }) {
     </AuthenticatedLayout>
   );
 }
+
